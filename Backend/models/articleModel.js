@@ -4,9 +4,9 @@ const ArticleSchema = new mongoose.Schema({
   title: { type: String, required: true },
   photos: [
     {
-      url: { type: String, required: true },  // URL or path to the photo
-      title: { type: String, required: true }, // Title of the photo
-      description: { type: String, required: true } // Description of the photo
+      url: { type: String, required: true },  
+      title: { type: String, required: true }, 
+      description: { type: String, required: true } 
     }
   ],
   content: { type: String, required: true },
