@@ -10,6 +10,7 @@ const elasticClient = require('./config/elasticsearch');
 // const kafkaClient = require('./config/kafka');
 const routes = require('./routes/index');
 const MongoStore = require('connect-mongo');
+const { keepServerAlive } = require('./utils/ServerRunning');
 // const { startConsumer } = require('./utils/kafka');
 
 dotenv.config();
@@ -59,4 +60,5 @@ app.use('/api', routes);
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
+  keepServerAlive();
 });
