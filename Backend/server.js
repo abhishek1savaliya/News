@@ -1,5 +1,6 @@
 const express = require('express');
 const dotenv = require('dotenv');
+const morgan = require('morgan')
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
 const connectDB = require('./config/db');
@@ -51,7 +52,7 @@ app.use(
     },
   })
 );
-
+app.use(morgan('tiny'))
 app.use('/api', routes);
 
 const PORT = process.env.PORT || 3000;
