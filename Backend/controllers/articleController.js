@@ -30,51 +30,62 @@ const getCache = async (key) => {
 
 exports.getAllArticles = async (req, res) => {
   try {
-    const { query } = req.query;
+    // Get pagination parameters from the query
+    const { page = 1, limit = 10 } = req.query; // Default to page 1 and limit 10
+    const skip = (page - 1) * limit; // Calculate how many records to skip
+
+    const cacheKey = `articles:page:${page}-limit:${limit}`;
 
 
-    const cacheKey = query ? `articles:search:${query}` : 'articles:all';
-
-    // Check if the data is already in the cache
     const cachedData = await getCache(cacheKey);
+
     if (cachedData) {
-      return res.status(200).json({ source: 'cache', data: cachedData });
-    }
 
-    if (query) {
-      // Perform search on Elasticsearch
-      const result = await elasticClient.search({
-        index: 'articles',
-        body: {
-          query: {
-            multi_match: {
-              query,
-              fields: ['headline', 'content'], // Updated to use 'headline'
-            },
-          },
-        },
+      // Ensure pagination is present and return it
+      return res.status(200).json({
+        source: 'cache',
+        data: cachedData.articles || [],
+        pagination: cachedData.pagination || { currentPage: Number(page), totalPages: 0, totalArticles: 0, limit: Number(limit) }
       });
-
-      const hits = result.hits.hits.map(hit => hit._source);
-
-      // Cache the search results
-      setCache(cacheKey, hits);
-
-      return res.status(200).json({ source: 'search', data: hits });
-
-    } else {
-      // Fetch all articles from MongoDB
-      const articles = await Article.find();
-
-      // Cache the list of articles
-      setCache(cacheKey, articles);
-
-      res.status(200).json({ source: 'db', data: articles });
     }
+
+    // Fetch total count of articles for pagination metadata
+    const totalArticles = await Article.countDocuments(); 
+    const totalPages = Math.ceil(totalArticles / limit);
+
+    const articles = await Article.find()
+      .skip(skip)
+      .limit(Number(limit)); // Ensure limit is a number
+
+    // Prepare the response object
+    const response = {
+      source: 'db',
+      data: articles,
+      pagination: {
+        currentPage: Number(page),
+        totalPages,
+        totalArticles,
+        limit: Number(limit),
+      },
+    };
+
+    // Cache the paginated articles and pagination info
+    setCache(cacheKey, {
+      articles,
+      pagination: response.pagination, 
+    });
+
+    // Send response
+    res.status(200).json(response);
+
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
+
+
+
+
 
 exports.searchArticles = async (req, res) => {
   try {
