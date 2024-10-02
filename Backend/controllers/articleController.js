@@ -2,8 +2,8 @@ const Article = require('../models/articleModel');
 const redisClient = require('../config/redis'); // Import Redis client
 const elasticClient = require('../config/elasticsearch');
 const kafkaClient = require('../config/kafka');
-const { startConsumer } = require('../utils/kafka');
-
+const Topic = require('../models/TopicModel');
+// const { startConsumer } = require('../utils/kafka');
 
 const getCachedArticle = async (articleId) => {
   const cachedArticle = await redisClient.get(`article:${articleId}`);
@@ -32,7 +32,7 @@ exports.getAllArticles = async (req, res) => {
   try {
     const { query } = req.query;
 
-    // Generate a unique key for caching based on query
+
     const cacheKey = query ? `articles:search:${query}` : 'articles:all';
 
     // Check if the data is already in the cache
@@ -49,7 +49,7 @@ exports.getAllArticles = async (req, res) => {
           query: {
             multi_match: {
               query,
-              fields: ['title', 'content'],
+              fields: ['headline', 'content'], // Updated to use 'headline'
             },
           },
         },
@@ -91,7 +91,7 @@ exports.searchArticles = async (req, res) => {
         query: {
           multi_match: {
             query,
-            fields: ['title', 'content'],
+            fields: ['headline', 'content'], // Updated to use 'headline'
             fuzziness: 'AUTO',
           },
         },
@@ -111,31 +111,49 @@ exports.getArticleById = async (req, res) => {
   const { id } = req.params;
 
   try {
-    // Check if the article is cached
+
     const cachedArticle = await getCachedArticle(id);
     if (cachedArticle) {
       return res.status(200).json(cachedArticle);
     }
 
-    // If not cached, fetch from database
-    const article = await Article.findById(id);
+    const article = await Article.findById(id).populate('author').populate('topic'); // Populate author and topic
     if (!article) {
       return res.status(404).json({ message: 'Article not found' });
     }
 
-    // Cache the article and return the response
     await cacheArticle(id, article);
+
     res.status(200).json(article);
+
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-// Create new article (also index it in Elasticsearch and send message to Kafka)
+
 exports.createArticle = async (req, res) => {
-  const { title, content, author } = req.body;
+  const { headline, content, author, photos, frontPage, isActive, topic } = req.body;
+
   try {
-    const article = new Article({ title, content, author });
+    // Check if the topic exists
+    let existingTopic = await Topic.findOne({ name: topic });
+
+    if (!existingTopic) {
+      existingTopic = new Topic({ name: topic });
+      await existingTopic.save();
+    }
+
+    // Create the article with the existing or newly created topic
+    const article = new Article({
+      headline,
+      content,
+      author: req.user.id,
+      photos,
+      frontPage,
+      isActive,
+      topic: existingTopic._id, // Reference the topic's ID
+    });
 
     await article.save();
 
@@ -144,22 +162,21 @@ exports.createArticle = async (req, res) => {
       index: 'articles',
       id: article._id.toString(),
       body: {
-        title: article.title,
+        headline: article.headline,
         content: article.content,
       },
     });
 
-    // Send message to Kafka
-    await kafkaClient.sendMessage(process.env.KAFKA_TOPIC || 'test-topic', {
-      event: 'article_created',
-      articleId: article._id.toString(),
-      title: article.title,
-      content: article.content,
-      author: article.author,
-    });
+    // Optionally send message to Kafka
+    // await kafkaClient.sendMessage(process.env.KAFKA_TOPIC || 'test-topic', {
+    //   event: 'article_created',
+    //   articleId: article._id.toString(),
+    //   headline: article.headline,
+    //   content: article.content,
+    //   author: article.author,
+    // });
 
     res.status(201).json(article);
-
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
@@ -168,10 +185,10 @@ exports.createArticle = async (req, res) => {
 // Update article (also update Elasticsearch index and send message to Kafka)
 exports.updateArticle = async (req, res) => {
   const { id } = req.params;
-  const { title, content } = req.body;
+  const { headline, content, photos, frontPage, isActive, topic } = req.body;
 
   try {
-    const article = await Article.findByIdAndUpdate(id, { title, content }, { new: true });
+    const article = await Article.findByIdAndUpdate(id, { headline, content, photos, frontPage, isActive, topic }, { new: true });
 
     if (!article) {
       return res.status(404).json({ message: 'Article not found' });
@@ -183,7 +200,7 @@ exports.updateArticle = async (req, res) => {
       id: article._id.toString(),
       body: {
         doc: {
-          title: article.title,
+          headline: article.headline,
           content: article.content,
         },
       },
@@ -196,7 +213,7 @@ exports.updateArticle = async (req, res) => {
     await kafkaClient.sendMessage(process.env.KAFKA_TOPIC || 'test-topic', {
       event: 'article_updated',
       articleId: article._id.toString(),
-      title: article.title,
+      headline: article.headline,
       content: article.content,
     });
 
@@ -236,4 +253,3 @@ exports.deleteArticle = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-
