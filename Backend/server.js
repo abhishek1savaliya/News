@@ -1,6 +1,7 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const morgan = require('morgan')
+const cors = require('cors');
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
 require('dotenv').config()
@@ -37,6 +38,9 @@ redisClient.connect().catch((err) => console.error('Redis connection error: ', e
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
+app.use(cors({
+  origin: "*",
+}));
 
 // Session configuration
 app.use(
