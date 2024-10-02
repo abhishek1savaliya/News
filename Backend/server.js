@@ -43,7 +43,7 @@ app.use(
     resave: false,
     saveUninitialized: false,
     store: MongoStore.create({
-      mongoUrl: process.env.MONGODB_URI || 'mongodb://localhost:27017/myapp', // Your MongoDB connection string
+      mongoUrl: process.env.MONGODB_URI, // Your MongoDB connection string
       collectionName: 'sessions',
     }),
     cookie: {
