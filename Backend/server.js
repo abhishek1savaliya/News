@@ -3,6 +3,7 @@ const dotenv = require('dotenv');
 const morgan = require('morgan')
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
+require('dotenv').config()
 const connectDB = require('./config/db');
 const redisClient = require('./config/redis');
 const elasticClient = require('./config/elasticsearch');
@@ -43,7 +44,7 @@ app.use(
     resave: false,
     saveUninitialized: false,
     store: MongoStore.create({
-      mongoUrl: process.env.MONGODB_URI, // Your MongoDB connection string
+      mongoUrl: process.env.MONGO_URI,
       collectionName: 'sessions',
     }),
     cookie: {
