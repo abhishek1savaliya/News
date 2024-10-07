@@ -37,17 +37,17 @@ exports.getAllArticles = async (req, res) => {
     const cacheKey = `articles:page:${page}-limit:${limit}`;
 
 
-    const cachedData = await getCache(cacheKey);
+    // const cachedData = await getCache(cacheKey);
 
-    if (cachedData) {
+    // if (cachedData) {
 
-      // Ensure pagination is present and return it
-      return res.status(200).json({
-        source: 'cache',
-        data: cachedData.articles || [],
-        pagination: cachedData.pagination || { currentPage: Number(page), totalPages: 0, totalArticles: 0, limit: Number(limit) }
-      });
-    }
+    //   // Ensure pagination is present and return it
+    //   return res.status(200).json({
+    //     source: 'cache',
+    //     data: cachedData.articles || [],
+    //     pagination: cachedData.pagination || { currentPage: Number(page), totalPages: 0, totalArticles: 0, limit: Number(limit) }
+    //   });
+    // }
 
     // Fetch total count of articles for pagination metadata
     const totalArticles = await Article.countDocuments(); 
