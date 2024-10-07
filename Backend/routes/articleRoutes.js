@@ -1,11 +1,12 @@
 const express = require('express');
 const { protect } = require('../middleware/authMiddleware');
 const { authorize } = require('../middleware/roleMiddleware');
-const { getAllArticles, getArticleById, createArticle, updateArticle, deleteArticle, searchArticles } = require('../controllers/articleController');
+const { getAllArticles, getArticleById, createArticle, updateArticle, deleteArticle, searchArticles, getPagination } = require('../controllers/articleController');
 
 const router = express.Router();
 
 router.get('/', getAllArticles);
+router.get('/pagination', getPagination);
 router.get('/search', searchArticles);
 router.get('/single/:id', getArticleById);
 

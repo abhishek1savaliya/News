@@ -83,6 +83,31 @@ exports.getAllArticles = async (req, res) => {
   }
 };
 
+exports.getPagination = async (req, res) => {
+  try {
+
+    const { page = 1, limit = 10 } = req.query; 
+
+    const totalArticles = await Article.countDocuments(); 
+    const totalPages = Math.ceil(totalArticles / limit);
+
+    const response = {
+      source: 'db',
+      data: {
+        currentPage: Number(page),
+        totalPages,
+        totalArticles,
+        limit: Number(limit),
+      }
+    };
+
+    res.status(200).json(response);
+
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 
 
 
