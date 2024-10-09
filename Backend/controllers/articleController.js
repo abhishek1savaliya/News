@@ -54,8 +54,9 @@ exports.getAllArticles = async (req, res) => {
     const totalPages = Math.ceil(totalArticles / limit);
 
     const articles = await Article.find()
+      .sort({ createdAt: -1 }) // Sort by createdAt in descending order
       .skip(skip)
-      .limit(Number(limit)); // Ensure limit is a number
+      .limit(Number(limit));
 
     // Prepare the response object
     const response = {
@@ -165,16 +166,16 @@ exports.getArticleById = async (req, res) => {
 
 
 exports.createArticle = async (req, res) => {
-  const { 
-    headline, 
-    content, 
-    photos, 
-    frontPage, 
-    isActive, 
-    topic, 
-    country, 
-    state, 
-    city 
+  const {
+    headline,
+    content,
+    photos,
+    frontPage,
+    isActive,
+    topic,
+    country,
+    state,
+    city
   } = req.body;
 
   try {
@@ -190,7 +191,6 @@ exports.createArticle = async (req, res) => {
       await Article.updateMany({ frontPage: true }, { $set: { frontPage: false } });
     }
 
-    // Create the article with the existing or newly created topic
     const article = new Article({
       headline,
       content,
@@ -198,7 +198,7 @@ exports.createArticle = async (req, res) => {
       photos,
       frontPage,
       isActive,
-      topic: existingTopic._id, 
+      topic: existingTopic._id,
       country,
       state,
       city,
