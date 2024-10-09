@@ -37,13 +37,13 @@ const Newsfeed = ({ articles }) => {
                         </Link>
 
                         <div className="absolute top-2 right-2 text-gray-800 dark:text-gray-200">
-                            <div className="tooltip tooltip-left tooltip-info z-50" data-tip={article.view}>
+                            <div className="tooltip tooltip-left tooltip-info" data-tip={article.view}>
                                 <FaEye />
                             </div>
                         </div>
 
                         <div>
-                            <Thumplike date={article.createdAt} like={article.like} dislike={article.dislike} id={article._id} />
+                            <Thumplike country={article.country} state={article.state} city={article.city} date={article.createdAt} like={article.like} dislike={article.dislike} id={article._id} />
                         </div>
                     </div>
 
@@ -61,7 +61,7 @@ const Newsfeed = ({ articles }) => {
                                     />
                                 ) : (
                                     <Image
-                                        src="/fallback-image.jpg" // Replace with your fallback image path
+                                        src="/fallback-image.jpg" 
                                         alt="Fallback image"
                                         width={140}
                                         height={140}
@@ -75,13 +75,13 @@ const Newsfeed = ({ articles }) => {
                         </Link>
 
                         <div className="absolute top-2 right-2 cursor-pointer text-gray-800 dark:text-gray-200">
-                            <div className="tooltip tooltip-left tooltip-info z-50" data-tip={article.view}>
+                            <div className="tooltip tooltip-left tooltip-info" data-tip={article.view}>
                                 <FaEye />
                             </div>
                         </div>
 
                         <div>
-                            <Thumplike date={article.createdAt} like={article.like} dislike={article.dislike} />
+                            <Thumplike country={article.country} state={article.state} city={article.city} date={article.createdAt} like={article.like} dislike={article.dislike} id={article._id} />
                         </div>
                     </div>
                 );
