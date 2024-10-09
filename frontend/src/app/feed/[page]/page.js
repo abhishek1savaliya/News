@@ -10,10 +10,12 @@ const Feed = async ({ params }) => {
     const articles = await response.json();
 
     return (
-        <>
+   
+           <div className="p-1 mt-2 sm:ml-96 sm:mr-96 bg-gray-600">
             <Newsfeed articles={articles.data} />
             <Pagination />
-        </>
+            </div>
+      
     )
 }
 
