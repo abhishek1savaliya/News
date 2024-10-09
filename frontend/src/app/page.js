@@ -1,9 +1,10 @@
-import Main from "./Main/page";
+import Feed from "./feed/[page]/page";
+
 
 export default function Home() {
   return (
     <>
-      <Main />
+      <Feed />
     </>
   );
 }

@@ -1,12 +1,12 @@
 import React from 'react';
 
-const Article = async () => {
-    // Fetch article data from the API
-    const response = await fetch('https://news-pm9f.onrender.com/api/articles/single/66fd737c47418650922c8fd2');
+const Article = async ({ params }) => {
+
+    const response = await fetch(`https://news-pm9f.onrender.com/api/articles/single/${params.id}`);
     const article = await response.json();
 
-    // Destructure the necessary fields from the article
     const { headline, photos, content } = article;
+
     const headlinePhoto = photos.length > 0 ? photos[0].url : null;
 
     return (

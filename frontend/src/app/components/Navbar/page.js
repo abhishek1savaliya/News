@@ -51,7 +51,7 @@ const Navbar = () => {
                     {/* Menu (Center) */}
                     <div className="hidden lg:flex lg:items-center lg:justify-center flex-1">
                         <div className="flex space-x-20">
-                            <Link href="/" className={`text-gray-700 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400 ${isActiveLink('/') ? 'text-blue-500 font-bold' : ''}`}>
+                            <Link href="/feed/1" className={`text-gray-700 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400 ${isActiveLink('/feed/1') ? 'text-blue-500 font-bold' : ''}`}>
                                 Home
                             </Link>
                             <Link href="/photo" className={`text-gray-700 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400 ${isActiveLink('/photo') ? 'text-blue-500 font-bold' : ''}`}>
