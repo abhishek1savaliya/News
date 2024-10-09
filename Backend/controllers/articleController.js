@@ -50,7 +50,7 @@ exports.getAllArticles = async (req, res) => {
     // }
 
     // Fetch total count of articles for pagination metadata
-    const totalArticles = await Article.countDocuments(); 
+    const totalArticles = await Article.countDocuments();
     const totalPages = Math.ceil(totalArticles / limit);
 
     const articles = await Article.find()
@@ -72,7 +72,7 @@ exports.getAllArticles = async (req, res) => {
     // Cache the paginated articles and pagination info
     setCache(cacheKey, {
       articles,
-      pagination: response.pagination, 
+      pagination: response.pagination,
     });
 
     // Send response
@@ -86,9 +86,9 @@ exports.getAllArticles = async (req, res) => {
 exports.getPagination = async (req, res) => {
   try {
 
-    const { page = 1, limit = 10 } = req.query; 
+    const { page = 1, limit = 10 } = req.query;
 
-    const totalArticles = await Article.countDocuments(); 
+    const totalArticles = await Article.countDocuments();
     const totalPages = Math.ceil(totalArticles / limit);
 
     const response = {
@@ -107,10 +107,6 @@ exports.getPagination = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-
-
-
-
 
 exports.searchArticles = async (req, res) => {
   try {
@@ -169,15 +165,29 @@ exports.getArticleById = async (req, res) => {
 
 
 exports.createArticle = async (req, res) => {
-  const { headline, content, author, photos, frontPage, isActive, topic } = req.body;
+  const { 
+    headline, 
+    content, 
+    photos, 
+    frontPage, 
+    isActive, 
+    topic, 
+    country, 
+    state, 
+    city 
+  } = req.body;
 
   try {
-    // Check if the topic exists
+
     let existingTopic = await Topic.findOne({ name: topic });
 
     if (!existingTopic) {
       existingTopic = new Topic({ name: topic });
       await existingTopic.save();
+    }
+
+    if (frontPage) {
+      await Article.updateMany({ frontPage: true }, { $set: { frontPage: false } });
     }
 
     // Create the article with the existing or newly created topic
@@ -188,12 +198,17 @@ exports.createArticle = async (req, res) => {
       photos,
       frontPage,
       isActive,
-      topic: existingTopic._id, // Reference the topic's ID
+      topic: existingTopic._id, 
+      country,
+      state,
+      city,
+      like: 0,
+      dislike: 0,
+      view: 0
     });
 
     await article.save();
 
-    // Index the article in Elasticsearch
     await elasticClient.index({
       index: 'articles',
       id: article._id.toString(),
@@ -202,15 +217,6 @@ exports.createArticle = async (req, res) => {
         content: article.content,
       },
     });
-
-    // Optionally send message to Kafka
-    // await kafkaClient.sendMessage(process.env.KAFKA_TOPIC || 'test-topic', {
-    //   event: 'article_created',
-    //   articleId: article._id.toString(),
-    //   headline: article.headline,
-    //   content: article.content,
-    //   author: article.author,
-    // });
 
     res.status(201).json(article);
   } catch (error) {
