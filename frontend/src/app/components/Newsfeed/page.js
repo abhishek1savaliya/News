@@ -37,7 +37,7 @@ const Newsfeed = ({ articles }) => {
                         </Link>
 
                         <div className="absolute top-2 right-2 text-gray-800 dark:text-gray-200">
-                            <div className="tooltip tooltip-left z-50" data-tip={article.view}>
+                            <div className="tooltip tooltip-left tooltip-info z-50" data-tip={article.view}>
                                 <FaEye />
                             </div>
                         </div>
@@ -75,7 +75,7 @@ const Newsfeed = ({ articles }) => {
                         </Link>
 
                         <div className="absolute top-2 right-2 cursor-pointer text-gray-800 dark:text-gray-200">
-                            <div className="tooltip tooltip-left z-50" data-tip={article.view}>
+                            <div className="tooltip tooltip-left tooltip-info z-50" data-tip={article.view}>
                                 <FaEye />
                             </div>
                         </div>

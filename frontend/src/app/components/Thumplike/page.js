@@ -10,12 +10,12 @@ const Thumplike = ({ date, like, dislike, id }) => {
     return (
         <div className="absolute right-0 bottom-0 flex items-center p-4 space-x-4">
             <button className="text-gray-800 dark:text-gray-200 cursor-pointer">
-                <div className="tooltip tooltip-top z-50" data-tip={like}>
+                <div className="tooltip tooltip-top tooltip-info z-50" data-tip={like}>
                     <FaThumbsUp />
                 </div>
             </button>
             <button className="text-gray-800 dark:text-gray-200 cursor-pointer">
-                <div className="tooltip tooltip-top z-50" data-tip={dislike}>
+                <div className="tooltip tooltip-top tooltip-error z-50" data-tip={dislike}>
                     <FaThumbsDown />
                 </div>
             </button>
