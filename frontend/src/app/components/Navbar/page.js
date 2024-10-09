@@ -19,12 +19,17 @@ const Navbar = () => {
         <nav className="fixed top-0 z-50 w-full bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex items-center justify-between h-16">
-                    <div className="flex-shrink-0">
-                        <span className='text-2xl text-blue-600'>
-                            ANews
-                        </span>
-                    </div>
 
+                    <Link
+                        href="/"
+
+                    >
+                        <div className="flex-shrink-0">
+                            <span className='text-2xl text-blue-600'>
+                                ANews
+                            </span>
+                        </div>
+                    </Link>
                     {/* Menu Toggle Button for Mobile */}
                     <div className="block lg:hidden">
                         <button
