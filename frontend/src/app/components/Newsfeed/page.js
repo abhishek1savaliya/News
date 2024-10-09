@@ -7,9 +7,7 @@ import Thumplike from '../Thumplike/page';
 const Newsfeed = ({ articles }) => {
     return (
         <div className="p-1 dark:border-gray-700 mt-14">
-            {articles
-                .sort((a, b) => b.frontPage - a.frontPage) // Sort articles: frontPage true first
-                .map((article, id) => {
+            {articles?.sort((a, b) => b.frontPage - a.frontPage).map((article, id) => {
                     return article.frontPage ? (
                         <div key={article._id} className="relative flex flex-col h-96 mb-2 bg-gray-50 dark:bg-gray-800">
                             <Link href={`/article/${article._id}`}>
