@@ -11,7 +11,9 @@ const Navbar = () => {
         setIsMobileMenuOpen(!isMobileMenuOpen);
     };
 
-    const isActiveLink = (path) => pathname === path;
+    const isActiveLink = (path) => {
+        return pathname === path;
+    }
 
     return (
         <nav className="fixed top-0 z-50 w-full bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
@@ -51,9 +53,14 @@ const Navbar = () => {
                     {/* Menu (Center) */}
                     <div className="hidden lg:flex lg:items-center lg:justify-center flex-1">
                         <div className="flex space-x-20">
-                            <Link href="/feed/1" className={`text-gray-700 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400 ${isActiveLink('/feed/1') ? 'text-blue-500 font-bold' : ''}`}>
+                            <Link
+                                href="/"
+                                className={`text-gray-700 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400 ${isActiveLink('/feed/1') || isActiveLink('/') ? 'text-blue-500 font-bold' : ''
+                                    }`}
+                            >
                                 Home
                             </Link>
+
                             <Link href="/photo" className={`text-gray-700 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400 ${isActiveLink('/photo') ? 'text-blue-500 font-bold' : ''}`}>
                                 Photo
                             </Link>

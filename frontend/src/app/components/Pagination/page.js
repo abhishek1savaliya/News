@@ -8,8 +8,7 @@ const Pagination = async () => {
 
     const pathname = usePathname();
     const feedNumber = pathname.split('/').pop();
-
-
+    const activePage = feedNumber ? feedNumber : '1'
 
     const fetchPaginationData = async () => {
         try {
@@ -38,20 +37,35 @@ const Pagination = async () => {
                     {/* Page numbers */}
                     {pageNumbers.map((page) => (
                         <li key={page}>
-                            <Link href={`/feed/${page}`} passHref>
-                                <button
+                            {activePage === page.toString() ? (
+                                <div
                                     className={`flex items-center justify-center px-4 h-10 leading-tight 
-                border border-gray-300 
-                text-gray-500 
-                hover:bg-gray-100 hover:text-gray-700 
-                dark:bg-gray-800 dark:border-gray-700 
-                dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white
-                ${feedNumber === page.toString() ? 'bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-white' : ''}`} // Highlight current page
+        border border-gray-300 
+        text-gray-500 
+        bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-white 
+        ${page === 1 ? 'rounded-l' : ''} // Add border radius for the first page
+        ${page === totalPages ? 'rounded-r' : ''}`} // Add border radius for the last page
                                 >
                                     {page}
-                                </button>
+                                </div>
+                            ) : (
+                                <Link href={`/feed/${page}`} passHref>
+                                    <button
+                                        className={`flex items-center justify-center px-4 h-10 leading-tight 
+            border border-gray-300 
+            text-gray-500 
+            hover:bg-gray-100 hover:text-gray-700 
+            dark:bg-gray-800 dark:border-gray-700 
+            dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white
+            ${page === 1 ? 'rounded-l' : ''} // Add border radius for the first page
+            ${page === totalPages ? 'rounded-r' : ''}`} // Add border radius for the last page
+                                    >
+                                        {page}
+                                    </button>
+                                </Link>
+                            )}
 
-                            </Link>
+
                         </li>
                     ))}
                 </ul>
