@@ -139,8 +139,7 @@ exports.like = async (req, res) => {
 
     res.json({
       success: true,
-      action,
-      updatedArticle
+      action
     });
 
   } catch (error) {
@@ -202,12 +201,10 @@ exports.dislike = async (req, res) => {
       );
       action = 'disliked';
     }
-
-    // Return the updated action and success message
+    
     res.json({
       success: true,
       action,
-      article: updatedArticle
     });
 
   } catch (error) {
