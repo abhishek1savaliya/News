@@ -41,7 +41,7 @@ const Search = () => {
 
 
     return (
-        <div className="p-4 sm:ml-96 sm:mr-96 bg-gray-600 ">
+        <div className="p-4 sm:ml-72 sm:mr-72 bg-gray-600 ">
             <div className="p-4 bg-gray-700 mt-14 h-screen">
                 <label htmlFor="default-search" className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
 

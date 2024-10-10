@@ -49,15 +49,17 @@ const Newsfeed = ({ articles }) => {
                         </div>
 
                         <div>
-                            <Thumplike
-                                country={article.country}
-                                state={article.state}
-                                city={article.city}
-                                date={article.createdAt}
-                                like={article.like}
-                                dislike={article.dislike}
-                                id={article._id}
-                            />
+                            <div className="absolute right-0 bottom-0 flex items-center p-4 space-x-4">
+                                <Thumplike
+                                    country={article.country}
+                                    state={article.state}
+                                    city={article.city}
+                                    date={article.createdAt}
+                                    like={article.like}
+                                    dislike={article.dislike}
+                                    id={article._id}
+                                />
+                            </div>
                         </div>
                     </div>
                 ) : (
@@ -99,15 +101,17 @@ const Newsfeed = ({ articles }) => {
                         </div>
 
                         <div>
-                            <Thumplike
-                                country={article.country}
-                                state={article.state}
-                                city={article.city}
-                                date={article.createdAt}
-                                like={article.like}
-                                dislike={article.dislike}
-                                id={article._id}
-                            />
+                            <div className="absolute right-0 bottom-0 flex items-center p-4 space-x-4">
+                                <Thumplike
+                                    country={article.country}
+                                    state={article.state}
+                                    city={article.city}
+                                    date={article.createdAt}
+                                    like={article.like}
+                                    dislike={article.dislike}
+                                    id={article._id}
+                                />
+                            </div>
                         </div>
                     </div>
                 );

@@ -24,7 +24,7 @@ const Sidebar = () => {
     };
 
     // Hide the sidebar on specific pages like '/profile' or '/admin'
-    if (pathname === '/profile' || pathname === '/admin') {
+    if (pathname === '/profile' || pathname === '/admin' || pathname === '/signin'|| pathname === '/signup') {
         return null;
     }
 

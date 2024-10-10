@@ -1,10 +1,11 @@
-'use client'
+'use client';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 const Navbar = () => {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [token, setToken] = useState(null);
     const pathname = usePathname();
 
     const toggleMobileMenu = () => {
@@ -14,6 +15,17 @@ const Navbar = () => {
     const isActiveLink = (path) => {
         return pathname === path;
     };
+
+    // Check if the token is available in local storage (client-side only)
+    useEffect(() => {
+        const storedToken = localStorage.getItem('token');
+        setToken(storedToken);
+    }, []);
+
+    // Conditional rendering for certain routes
+    if (pathname === '/admin' || pathname === '/signin' || pathname === '/signup') {
+        return null;
+    }
 
     return (
         <nav className="fixed top-0 z-50 w-full bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
@@ -74,9 +86,20 @@ const Navbar = () => {
 
                     {/* Profile Section (Right) */}
                     <div className="hidden lg:flex lg:items-center">
-                        <Link href="/profile">
-                            <img className="w-10 h-10 rounded-full cursor-pointer" src="https://img.freepik.com/premium-photo/beautiful-wallpaper-hd-best-quality-hyper-realistic-colorful-image-background_621955-8118.jpg" alt="Rounded avatar" />
-                        </Link>
+                        {token ? (
+                            <Link href="/profile">
+                                <img className="w-10 h-10 rounded-full cursor-pointer" src="https://img.freepik.com/premium-photo/beautiful-wallpaper-hd-best-quality-hyper-realistic-colorful-image-background_621955-8118.jpg" alt="Rounded avatar" />
+                            </Link>
+                        ) : (
+                            <div className="flex space-x-4">
+                                <Link href="/signin" className="text-gray-700 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400">
+                                    Sign In
+                                </Link>
+                                <Link href="/signup" className="text-gray-700 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400">
+                                    Sign Up
+                                </Link>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>
@@ -97,9 +120,20 @@ const Navbar = () => {
                         <Link href="/contact" className={`block text-gray-700 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400 ${isActiveLink('/contact') ? 'text-blue-500 font-bold' : ''}`}>
                             Contact
                         </Link>
-                        <Link href="/profile" className={`block text-gray-700 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400 ${isActiveLink('/profile') ? 'text-blue-500 font-bold' : ''}`}>
-                            Profile
-                        </Link>
+                        {token ? (
+                            <Link href="/profile" className={`block text-gray-700 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400 ${isActiveLink('/profile') ? 'text-blue-500 font-bold' : ''}`}>
+                                Profile
+                            </Link>
+                        ) : (
+                            <div className="flex flex-col space-y-1">
+                                <Link href="/signin" className={`block text-gray-700 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400`}>
+                                    Sign In
+                                </Link>
+                                <Link href="/signup" className={`block text-gray-700 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400`}>
+                                    Sign Up
+                                </Link>
+                            </div>
+                        )}
                     </div>
                 </div>
             )}

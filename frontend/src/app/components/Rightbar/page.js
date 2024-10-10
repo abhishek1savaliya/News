@@ -10,7 +10,7 @@ const Rightbar = () => {
 
     const pathname = usePathname()
 
-    if (pathname === '/profile' || pathname === '/admin') {
+    if (pathname === '/profile' || pathname === '/admin' || pathname === '/signin'|| pathname === '/signup') {
         return null;
     }
 

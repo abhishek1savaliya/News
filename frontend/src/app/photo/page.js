@@ -14,19 +14,19 @@ const photoLinks = [
 
 const Photo = () => {
     return (
-        <div className="p-4 sm:ml-96 sm:mr-96 bg-gray-600">
+        <div className="p-4 sm:ml-72 sm:mr-72 bg-gray-600">
             <div className="p-4  bg-gray-700 mt-14">
 
                 {
                     photoLinks.map((photo) => {
                         return (
-                            <div className="flex flex-col h-96 mb-4 bg-gray-50 dark:bg-gray-800 ">
+                            <div className="flex flex-col h-72 mb-4 bg-gray-50 dark:bg-gray-800 ">
                                 <Image
                                     src={photo}
                                     alt="Description of image"
-                                    width={800}
+                                    width={900}
                                     height={500}
-                                    className="h-96  object-cover"
+                                    className="h-72  object-cover"
                                 />
                             </div>
                         )

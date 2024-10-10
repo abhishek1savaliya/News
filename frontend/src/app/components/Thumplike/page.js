@@ -22,14 +22,24 @@ const Thumplike = ({ country, state, city, date, like, dislike, id }) => {
     const formattedDate = moment(date).format('DD/MM/YY hh:mm A');
 
     return (
-        <div className="absolute right-0 bottom-0 flex items-center p-4 space-x-4">
+        <>
             <div className="tooltip tooltip-left tooltip-accent" data-tip={`${state} ${country}`}>
                 <span className="text-white">{city}</span>
             </div>
             <div className="tooltip tooltip-left tooltip-success" data-tip={formattedDate}>
                 <span className="text-white">{formattedTimeAgo}</span>
             </div>
-        </div>
+
+
+            <button className="text-gray-800 dark:text-gray-200 cursor-pointer">
+                <FaThumbsUp />
+            </button>
+            <button className="text-gray-800 dark:text-gray-200 cursor-pointer">
+                <FaThumbsDown />
+            </button>
+        </>
+
+        // </div>
     );
 }
 
