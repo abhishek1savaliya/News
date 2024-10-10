@@ -264,12 +264,12 @@ exports.updateArticle = async (req, res) => {
     });
 
     res.status(200).json(article);
+    
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-// Delete article (also remove from Elasticsearch index and cache, send message to Kafka)
 exports.deleteArticle = async (req, res) => {
   const { id } = req.params;
 

@@ -36,8 +36,6 @@ exports.getUserProfile = async (req, res) => {
 };
 
 
-
-// Update user profile (User, Employee, Admin)
 exports.updateUserProfile = async (req, res) => {
   try {
     const { fName, lName, subscribedTopic } = req.body;
@@ -78,7 +76,46 @@ exports.updateUserProfile = async (req, res) => {
   }
 };
 
-// Delete user (Admin access only)
+exports.like = async (req, res) => {
+  try {
+    const { articleId } = req.body;
+
+    // Find the user by ID
+    const user = await User.findById(req.user.id);
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Check if the articleId is already in the likedNews array
+    const articleIndex = user.likedNews.indexOf(articleId);
+
+    let action;
+    if (articleIndex === -1) {
+      // If the articleId is not in the array, add it (like the article)
+      user.likedNews.push(articleId);
+      action = 'liked';
+    } else {
+      // If the articleId is already in the array, remove it (unlike the article)
+      user.likedNews.splice(articleIndex, 1);
+      action = 'unliked';
+    }
+
+    // Save the updated user
+    const updatedUser = await user.save();
+
+    res.json({
+      success: true,
+      action, // either 'liked' or 'unliked'
+      likedNews: updatedUser.likedNews // Return the updated likedNews array
+    });
+
+  } catch (error) {
+    console.error(error); // Log the error for debugging
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
 exports.deleteUser = async (req, res) => {
   try {
     const user = await User.findByIdAndDelete(req.params.id);
@@ -91,7 +128,6 @@ exports.deleteUser = async (req, res) => {
   }
 };
 
-// Change user role (Admin access only)
 exports.changeUserRole = async (req, res) => {
   try {
     const { role } = req.body;

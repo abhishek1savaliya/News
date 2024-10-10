@@ -7,6 +7,7 @@ const {
   updateUserProfile,
   deleteUser,
   changeUserRole,
+  like,
 } = require('../controllers/userController');
 
 const router = express.Router();
@@ -17,5 +18,7 @@ router.put('/:id/role', protect, authorize(['admin']), changeUserRole);
 
 router.get('/me', protect, getUserProfile);
 router.put('/me', protect, updateUserProfile);
+
+router.put('/like', protect, like);
 
 module.exports = router;
