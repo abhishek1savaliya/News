@@ -1,3 +1,4 @@
+const Article = require('../models/articleModel');
 const TopicModel = require('../models/TopicModel');
 const User = require('../models/userModel');
 
@@ -80,34 +81,47 @@ exports.like = async (req, res) => {
   try {
     const { articleId } = req.body;
 
-    // Find the user by ID
-    const user = await User.findById(req.user.id);
+    const article = await Article.findById(articleId);
+    if (!article) {
+      return res.status(404).json({ message: 'Article not found' });
+    }
 
+    const user = await User.findById(req.user.id);
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    // Check if the articleId is already in the likedNews array
-    const articleIndex = user.likedNews.indexOf(articleId);
-
     let action;
-    if (articleIndex === -1) {
-      // If the articleId is not in the array, add it (like the article)
-      user.likedNews.push(articleId);
-      action = 'liked';
-    } else {
-      // If the articleId is already in the array, remove it (unlike the article)
-      user.likedNews.splice(articleIndex, 1);
-      action = 'unliked';
-    }
+    let updatedArticle;
 
-    // Save the updated user
-    const updatedUser = await user.save();
+    if (user.likedNews.includes(articleId)) {
+
+      await User.findByIdAndUpdate(req.user.id, { $pull: { likedNews: articleId } });
+
+      updatedArticle = await Article.findByIdAndUpdate(
+        articleId,
+        { $inc: { like: -1 } }, // Decrease the like count by 1
+        { new: true }           // Return the updated article
+      );
+
+      action = 'unliked';
+
+    } else {
+      // If the article is not liked, like it
+      await User.findByIdAndUpdate(req.user.id, { $addToSet: { likedNews: articleId } });
+
+      // Increment the like count in the article
+      updatedArticle = await Article.findByIdAndUpdate(
+        articleId,
+        { $inc: { like: 1 } },
+        { new: true }
+      );
+      action = 'liked';
+    }
 
     res.json({
       success: true,
-      action, // either 'liked' or 'unliked'
-      likedNews: updatedUser.likedNews // Return the updated likedNews array
+      action,
     });
 
   } catch (error) {

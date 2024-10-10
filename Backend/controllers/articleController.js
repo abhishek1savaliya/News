@@ -145,10 +145,10 @@ exports.getArticleById = async (req, res) => {
 
   try {
 
-    const cachedArticle = await getCachedArticle(id);
-    if (cachedArticle) {
-      return res.status(200).json(cachedArticle);
-    }
+    // const cachedArticle = await getCachedArticle(id);
+    // if (cachedArticle) {
+    //   return res.status(200).json(cachedArticle);
+    // }
 
     const article = await Article.findById(id).populate('author').populate('topic'); // Populate author and topic
     if (!article) {
@@ -264,7 +264,7 @@ exports.updateArticle = async (req, res) => {
     });
 
     res.status(200).json(article);
-    
+
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
