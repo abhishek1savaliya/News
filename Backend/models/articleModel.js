@@ -31,20 +31,28 @@ const ArticleSchema = new mongoose.Schema(
       type: String,
       required: true
     },
+    category: {
+      type: String,
+      required: true
+    },
+    subCategory: {
+      type: String,
+      required: true
+    },
     like: {
       type: Number,
-      default: 0 // Default value for likes
+      default: 0
     },
     dislike: {
       type: Number,
-      default: 0 
+      default: 0
     },
     view: {
       type: Number,
       default: 0
     }
   },
-  { timestamps: true } 
+  { timestamps: true }
 );
 
 module.exports = mongoose.model('Article', ArticleSchema);

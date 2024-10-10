@@ -175,7 +175,9 @@ exports.createArticle = async (req, res) => {
     topic,
     country,
     state,
-    city
+    city,
+    category,
+    subCategory
   } = req.body;
 
   try {
@@ -202,6 +204,8 @@ exports.createArticle = async (req, res) => {
       country,
       state,
       city,
+      category,
+      subCategory,
       like: 0,
       dislike: 0,
       view: 0

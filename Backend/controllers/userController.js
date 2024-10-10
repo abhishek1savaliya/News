@@ -13,7 +13,8 @@ exports.getAllUsers = async (req, res) => {
 // Get user profile (User, Employee, Admin)
 exports.getUserProfile = async (req, res) => {
   try {
-    const user = await User.findById(req.user.id).select('-password'); // Exclude password
+    const user = await User.findById(req.user.id).select('-password'); 
+
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
@@ -26,16 +27,32 @@ exports.getUserProfile = async (req, res) => {
 // Update user profile (User, Employee, Admin)
 exports.updateUserProfile = async (req, res) => {
   try {
+    // Get the fields to update from the request body
+    const updates = {
+      fName: req.body.fName,
+      lName: req.body.lName,
+      email: req.body.email,
+      subscribedTopic: req.body.subscribedTopic,  // If updating subscribed topics
+      likedNews: req.body.likedNews,             // If updating liked articles
+      dislikedNews: req.body.dislikedNews        // If updating disliked articles
+    };
+
+    // Find the user by ID and update the fields
     const updatedUser = await User.findByIdAndUpdate(
       req.user.id,
-      { username: req.body.username },
-      { new: true }
-    ).select('-password');
+      updates,
+      { new: true, runValidators: true }
+    ).select('-password');  // Ensure password is not included in the response
+
+    // If no user is found, return a 404 error
     if (!updatedUser) {
       return res.status(404).json({ message: 'User not found' });
     }
+
+    // Return the updated user object
     res.json(updatedUser);
   } catch (error) {
+    // Return a server error if something goes wrong
     res.status(500).json({ message: 'Server error' });
   }
 };

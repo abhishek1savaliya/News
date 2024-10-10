@@ -18,8 +18,12 @@ const UserSchema = new mongoose.Schema({
   dislikedNews: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Article'
-  }]
-});
+  }],
+  joinDate: {
+    type: Date,
+    default: Date.now // Set joinDate default to current date
+  }
+}, { timestamps: true });
 
 UserSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next();
