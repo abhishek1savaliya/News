@@ -13,23 +13,18 @@ const Navbar = () => {
 
     const isActiveLink = (path) => {
         return pathname === path;
-    }
+    };
 
     return (
         <nav className="fixed top-0 z-50 w-full bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex items-center justify-between h-16">
 
-                    <Link
-                        href="/"
-
-                    >
-                        <div className="flex-shrink-0">
-                            <span className='text-2xl text-blue-600'>
-                                ANews
-                            </span>
-                        </div>
+                    {/* Logo */}
+                    <Link href="/" className="flex-shrink-0">
+                        <span className='text-2xl text-blue-600'>ANews</span>
                     </Link>
+
                     {/* Menu Toggle Button for Mobile */}
                     <div className="block lg:hidden">
                         <button
@@ -60,8 +55,7 @@ const Navbar = () => {
                         <div className="flex space-x-20">
                             <Link
                                 href="/"
-                                className={`text-gray-700 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400 ${isActiveLink('/feed/1') || isActiveLink('/') ? 'text-blue-500 font-bold' : ''
-                                    }`}
+                                className={`text-gray-700 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400 ${isActiveLink('/feed/1') || isActiveLink('/') ? 'text-blue-500 font-bold' : ''}`}
                             >
                                 Home
                             </Link>
@@ -94,11 +88,11 @@ const Navbar = () => {
                         <Link href="/" className={`block text-gray-700 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400 ${isActiveLink('/') ? 'text-blue-500 font-bold' : ''}`}>
                             Home
                         </Link>
-                        <Link href="/about" className={`block text-gray-700 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400 ${isActiveLink('/about') ? 'text-blue-500 font-bold' : ''}`}>
-                            About
+                        <Link href="/photo" className={`block text-gray-700 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400 ${isActiveLink('/photo') ? 'text-blue-500 font-bold' : ''}`}>
+                            Photo
                         </Link>
-                        <Link href="/services" className={`block text-gray-700 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400 ${isActiveLink('/services') ? 'text-blue-500 font-bold' : ''}`}>
-                            Services
+                        <Link href="/search" className={`block text-gray-700 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400 ${isActiveLink('/search') ? 'text-blue-500 font-bold' : ''}`}>
+                            Search
                         </Link>
                         <Link href="/contact" className={`block text-gray-700 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400 ${isActiveLink('/contact') ? 'text-blue-500 font-bold' : ''}`}>
                             Contact

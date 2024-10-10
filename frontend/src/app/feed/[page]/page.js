@@ -13,13 +13,14 @@ const Feed = async ({ params }) => {
                 page: page,
             },
         });
-        const articles = response.data; 
+        const articles = response.data;
 
         return (
-            <div className="p-1 mt-2 sm:ml-96 sm:mr-96 bg-gray-600">
+            <div className="p-1 mt-2 bg-gray-600 mx-4 sm:mx-10 lg:mx-40 xl:mx-72">
                 <Newsfeed articles={articles.data} />
                 <Pagination />
             </div>
+
         );
     } catch (error) {
         console.error('Error fetching articles:', error);
