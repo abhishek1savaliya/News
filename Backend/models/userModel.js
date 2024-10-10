@@ -21,7 +21,7 @@ const UserSchema = new mongoose.Schema({
   }],
   joinDate: {
     type: Date,
-    default: Date.now // Set joinDate default to current date
+    default: Date.now 
   }
 }, { timestamps: true });
 

@@ -1,3 +1,4 @@
+const TopicModel = require('../models/TopicModel');
 const User = require('../models/userModel');
 
 // Get all users (Admin access only)
@@ -13,46 +14,66 @@ exports.getAllUsers = async (req, res) => {
 // Get user profile (User, Employee, Admin)
 exports.getUserProfile = async (req, res) => {
   try {
-    const user = await User.findById(req.user.id).select('-password'); 
+    const user = await User.findById(req.user.id)
+      .select('-password') // Exclude password from the user object
+      .populate('subscribedTopic', 'name'); // Populate subscribedTopic with topic names
 
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
-    res.json(user);
+
+    // Format the user object to exclude _id from subscribedTopic
+    const userProfile = {
+      ...user.toObject(), // Convert Mongoose document to a plain JavaScript object
+      subscribedTopic: user.subscribedTopic.map(topic => topic.name), // Only include topic names
+    };
+
+    res.json(userProfile);
   } catch (error) {
+    console.error(error); // Log the error for debugging
     res.status(500).json({ message: 'Server error' });
   }
 };
 
+
+
 // Update user profile (User, Employee, Admin)
 exports.updateUserProfile = async (req, res) => {
   try {
-    // Get the fields to update from the request body
+    const { fName, lName, subscribedTopic } = req.body;
+
+    const topics = await TopicModel.find({ name: { $in: subscribedTopic } });
+
+    // Check if all topics exist
+    if (topics.length !== subscribedTopic.length) {
+      return res.status(400).json({ message: 'One or more topics are not valid' });
+    }
+
+    // Map the found topics to their IDs
+    const topicIds = topics.map(topic => topic._id);
+
     const updates = {
-      fName: req.body.fName,
-      lName: req.body.lName,
-      email: req.body.email,
-      subscribedTopic: req.body.subscribedTopic,  // If updating subscribed topics
-      likedNews: req.body.likedNews,             // If updating liked articles
-      dislikedNews: req.body.dislikedNews        // If updating disliked articles
+      fName,
+      lName,
+      subscribedTopic: topicIds, // Save topic IDs
     };
 
-    // Find the user by ID and update the fields
     const updatedUser = await User.findByIdAndUpdate(
       req.user.id,
       updates,
       { new: true, runValidators: true }
-    ).select('-password');  // Ensure password is not included in the response
+    ).select('-password').populate('subscribedTopic', 'name');
 
     // If no user is found, return a 404 error
     if (!updatedUser) {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    // Return the updated user object
     res.json(updatedUser);
+
   } catch (error) {
     // Return a server error if something goes wrong
+    console.error(error); // Log the error for debugging
     res.status(500).json({ message: 'Server error' });
   }
 };
