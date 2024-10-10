@@ -81,11 +81,13 @@ exports.like = async (req, res) => {
   try {
     const { articleId } = req.body;
 
+    // Find the article by ID
     const article = await Article.findById(articleId);
     if (!article) {
       return res.status(404).json({ message: 'Article not found' });
     }
 
+    // Find the user by ID
     const user = await User.findById(req.user.id);
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
@@ -94,34 +96,51 @@ exports.like = async (req, res) => {
     let action;
     let updatedArticle;
 
-    if (user.likedNews.includes(articleId)) {
+  
+    if (user.dislikedNews.includes(articleId)) {
+      await User.findByIdAndUpdate(req.user.id, {
+        $pull: { dislikedNews: articleId },    
+        $addToSet: { likedNews: articleId }   
+      });
 
+      // Increment the like count and decrement the dislike count
+      updatedArticle = await Article.findByIdAndUpdate(
+        articleId,
+        { $inc: { like: 1, dislike: -1 } },    // Adjust counts
+        { new: true }
+      );
+
+      action = 'liked';
+    }
+    // If the article is in likedNews, remove it from likedNews
+    else if (user.likedNews.includes(articleId)) {
       await User.findByIdAndUpdate(req.user.id, { $pull: { likedNews: articleId } });
 
       updatedArticle = await Article.findByIdAndUpdate(
         articleId,
-        { $inc: { like: -1 } }, // Decrease the like count by 1
-        { new: true }           // Return the updated article
+        { $inc: { like: -1 } },  // Decrease the like count by 1
+        { new: true }
       );
 
       action = 'unliked';
-
-    } else {
-      // If the article is not liked, like it
+    }
+    // If the article is neither liked nor disliked, add it to likedNews
+    else {
       await User.findByIdAndUpdate(req.user.id, { $addToSet: { likedNews: articleId } });
 
-      // Increment the like count in the article
       updatedArticle = await Article.findByIdAndUpdate(
         articleId,
-        { $inc: { like: 1 } },
+        { $inc: { like: 1 } },    // Increase the like count by 1
         { new: true }
       );
+
       action = 'liked';
     }
 
     res.json({
       success: true,
       action,
+      updatedArticle
     });
 
   } catch (error) {
@@ -129,6 +148,75 @@ exports.like = async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
+
+exports.dislike = async (req, res) => {
+  try {
+    const { articleId } = req.body;
+
+    // Find the article by ID
+    const article = await Article.findById(articleId);
+    if (!article) {
+      return res.status(404).json({ message: 'Article not found' });
+    }
+
+    // Find the user by ID
+    const user = await User.findById(req.user.id);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    let action;
+    let updatedArticle;
+
+    // Check if the article is in the liked or disliked arrays
+    const isLiked = user.likedNews.includes(articleId);
+    const isDisliked = user.dislikedNews.includes(articleId);
+
+    if (isDisliked) {
+      // If the article is already disliked, remove it from the disliked array and decrease the dislike count
+      await User.findByIdAndUpdate(req.user.id, { $pull: { dislikedNews: articleId } });
+
+      updatedArticle = await Article.findByIdAndUpdate(
+        articleId,
+        { $inc: { dislike: -1 } }, // Decrease the dislike count by 1
+        { new: true }
+      );
+      action = 'undisliked';
+
+    } else {
+      // If the article is liked, remove it from the liked array
+      if (isLiked) {
+        await User.findByIdAndUpdate(req.user.id, { $pull: { likedNews: articleId } });
+
+        // Decrease the like count in the article
+        await Article.findByIdAndUpdate(articleId, { $inc: { like: -1 } });
+      }
+
+      // Add to dislikedNews array and increment the dislike count
+      await User.findByIdAndUpdate(req.user.id, { $addToSet: { dislikedNews: articleId } });
+
+      updatedArticle = await Article.findByIdAndUpdate(
+        articleId,
+        { $inc: { dislike: 1 } }, // Increase the dislike count by 1
+        { new: true }
+      );
+      action = 'disliked';
+    }
+
+    // Return the updated action and success message
+    res.json({
+      success: true,
+      action,
+      article: updatedArticle
+    });
+
+  } catch (error) {
+    console.error(error); // Log the error for debugging
+    res.status(500).json({ message: 'An error occurred while processing your request' });
+  }
+};
+
+
 
 exports.deleteUser = async (req, res) => {
   try {

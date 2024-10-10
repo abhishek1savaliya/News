@@ -8,6 +8,7 @@ const {
   deleteUser,
   changeUserRole,
   like,
+  dislike,
 } = require('../controllers/userController');
 
 const router = express.Router();
@@ -20,5 +21,6 @@ router.get('/me', protect, getUserProfile);
 router.put('/me', protect, updateUserProfile);
 
 router.put('/like', protect, like);
+router.put('/dislike', protect, dislike);
 
 module.exports = router;
