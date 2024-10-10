@@ -2,6 +2,8 @@
 import React from 'react';
 import { FaThumbsDown, FaThumbsUp } from 'react-icons/fa';
 import moment from 'moment';
+import { GoSignIn } from "react-icons/go";
+import Link from 'next/link';
 
 const Thumplike = ({ country, state, city, date, like, dislike, id }) => {
     const now = moment();
@@ -21,6 +23,8 @@ const Thumplike = ({ country, state, city, date, like, dislike, id }) => {
 
     const formattedDate = moment(date).format('DD/MM/YY hh:mm A');
 
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+
     return (
         <>
             <div className="tooltip tooltip-left tooltip-accent" data-tip={`${state} ${country}`}>
@@ -30,16 +34,21 @@ const Thumplike = ({ country, state, city, date, like, dislike, id }) => {
                 <span className="text-white">{formattedTimeAgo}</span>
             </div>
 
-
-            <button className="text-gray-800 dark:text-gray-200 cursor-pointer">
-                <FaThumbsUp />
-            </button>
-            <button className="text-gray-800 dark:text-gray-200 cursor-pointer">
-                <FaThumbsDown />
-            </button>
+            {token ? ( 
+                <>
+                    <button className="text-gray-800 dark:text-gray-200 cursor-pointer">
+                        <FaThumbsUp />
+                    </button>
+                    <button className="text-gray-800 dark:text-gray-200 cursor-pointer">
+                        <FaThumbsDown />
+                    </button>
+                </>
+            ) : (
+                <Link href="/signin" className={`block text-gray-700 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400`}>
+                    <GoSignIn />
+                </Link>
+            )}
         </>
-
-        // </div>
     );
 }
 

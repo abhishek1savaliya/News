@@ -7,13 +7,13 @@ const Signin = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState(null);
-    const [loading, setLoading] = useState(false); // Add loading state
+    const [loading, setLoading] = useState(false);
 
     const router = useRouter();
 
     const handleSignin = async (e) => {
         e.preventDefault();
-        setLoading(true); // Set loading to true
+        setLoading(true); 
         try {
             const response = await axios.post('https://news-pm9f.onrender.com/api/auth/login', {
                 email,
